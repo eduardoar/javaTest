@@ -1,0 +1,38 @@
+server:
+  port: 5000
+
+gateway: http://localhost:3001
+
+client:
+  similarIds: product/{productId}/similarids
+  productDetail: product/{productId}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      productDetailCircuitBreaker:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        waitDurationInOpenState: 5s
+        slidingWindowType: COUNT_BASED
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+
+
+
